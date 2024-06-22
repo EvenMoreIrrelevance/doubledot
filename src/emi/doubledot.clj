@@ -132,7 +132,8 @@ or `(new ..AClass ...)`.")
       (cond
         (str/ends-with? proc ".")
         (throw (rex IllegalArgumentException
-                    "Refusing to process input because it ends in a dot."
+                    (str "Refusing to process input because it ends in a dot.\n"
+                         end-dot-err-explanation)
                     {:input proc}))
         :else
         (let [out (or (parse-nicknamed proc nicknames)
@@ -196,17 +197,16 @@ or `(new ..AClass ...)`.")
                                     {:nickname k :old-target o :new-target n}))))
                     (-> (conform!! ::nicks->classes nicks->classes)
                         (update-keys name)
-                        (update-vals #(let [printed (pr-str %)]
-                                        (cond
-                                          (not (str/includes? printed "."))
-                                          (throw (rex IllegalArgumentException
-                                                      "Classes which aren't package-qualified are disallowed."
-                                                      {:input %}))
-                                          (not (class-edn-read-roundtrips? %))
-                                          (throw (rex IllegalArgumentException
-                                                      "Classname doesn't read as a simple-symbol."
-                                                      {:input %}))
-                                          :else (Class/.getName %)))))))))))))
+                        (update-vals #(cond
+                                        (not (str/includes? (Class/.getName %) "."))
+                                        (throw (rex IllegalArgumentException
+                                                    "Classes which aren't package-qualified are disallowed."
+                                                    {:input %}))
+                                        (not (class-edn-read-roundtrips? %))
+                                        (throw (rex IllegalArgumentException
+                                                    "Classname doesn't read as a simple-symbol."
+                                                    {:input %}))
+                                        :else (Class/.getName %))))))))))))
 
 (defn unnicknames
   ([[:as more]] (unnicknames *ns* more))
@@ -289,7 +289,7 @@ or `(new ..AClass ...)`.")
    Processing works as follows: If the ns/name ends with `.`, then an error is thrown(1).
    Then, the prefix `..` is elided, and then an attempt is made to replace
    the whole namespace or name with the qualified name of the class with that nickname.
-   If that fails, the longest shorthand which is equal to a proper prefix of the ns/name
+   If that fails, the longest shorthand which is a proper prefix of the ns/name
    which ends in a dot minus the dot is replaced by its long hand form. If that also fails,
    an error is thrown. Finally, if the final output turned symbol can't resolve to a class,
    then an error is thrown.
@@ -304,8 +304,8 @@ or `(new ..AClass ...)`.")
    #+! #+! #+! ..j.u.List ; => java.util.List (idempotent)
    ```
 
-   (1) this is because of potentially unintuitive behaviors with how package qualifiers are resolved,
-   and due to the necessity to have a special case for nickname resolution. The choice was made to KISS."
+   (1) this is because of potentially unintuitive behaviors with how package qualifiers are detected,
+   and due to the necessity to have a special case for nickname expansion. The choice was made to KISS."
   [frm]
   (let [ns-transform (ns->transform *ns*)
         transform-two-dots #(if-let [[_ proc] (re-matches #"[.][.](.+)" %)]

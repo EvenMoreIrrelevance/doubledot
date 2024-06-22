@@ -6,7 +6,7 @@
   <packaging>jar</packaging>
   <groupId>emi</groupId>
   <artifactId>doubledot</artifactId>
-  <version>0.1.0-alpha1</version>
+  <version>0.1.0-alpha2</version>
   <name>emi/doubledot</name>
   <description>Nicknames and package shorthands that might actually work.</description>
   <url>https://github.com/EvenMoreIrrelevance/doubledot</url>
