@@ -7,3 +7,10 @@ Born of half a week of having to deal with multiple Java classes with the same p
 Never worry about that again! With only a bit of flagrant violation of Clojure's reserved symbols rules you too can experience the joy of `nicknames` for classes and `shorthands` for packages that work (almost) everywhere! If you aren't feeling adventurous or you just want your subforms to still make sense in isolation, there also is a reader macro to apply to single symbols that sadly makes the name of this library meaningless.
 
 Pre-Alpha.
+
+# COORDINATES
+
+```
+emi/doubledot {:git/url "https://github.com/EvenMoreIrrelevance/doubledot"
+               :git/sha "388739380863c66ca1b524eba2c7acf3af633bb2"}
+```
