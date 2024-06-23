@@ -11,6 +11,27 @@ but a `readerless` version is also available that lets you define your own inste
 
 Pre-Alpha.
 
+# USAGE EXAMPLE
+
+```clojure
+(shorthands '{j.u java.util clj clojure.lang})
+(nichnames {'DomNode org.w3c.dom.Node})
+
+;; recursive reader (interacts safely with itself)
+#+!
+(defn foo
+  [self]
+  (condp instance? self
+    ..clj.IPersistentMap :pmap
+    #+! ..j.u.concurrent.ConcurrentHashMap :concurrent-hash-map
+    ..j.u.Map :map
+    ..DomNode :dom-node!?))
+
+;; single symbol reader with no `..` requirement (interacts safely with recursive reader)
+:: also, note how `#+!` also works on metadata.
+(def coll->array-list #+! ^[..j.u.Collection] #-! j.u.ArrayList/new)
+```
+
 # COORDINATES
 
 ```
