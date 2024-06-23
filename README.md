@@ -28,7 +28,7 @@ Pre-Alpha.
     ..DomNode :dom-node!?))
 
 ;; single symbol reader with no `..` requirement (interacts safely with recursive reader)
-:: also, note how `#+!` also works on metadata.
+;; also, note how `#+!` also works on metadata.
 (def coll->array-list #+! ^[..j.u.Collection] #-! j.u.ArrayList/new)
 ```
 
