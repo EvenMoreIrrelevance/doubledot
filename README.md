@@ -9,7 +9,7 @@ Never worry about that again! With only a bit of flagrant violation of Clojure's
 By default, the reader-macros `#+!` and `#-!` are bound respectively to `read-shortened` and `read-shortened-sym`,
 but a `readerless` version is also available that lets you define your own instead.
 
-Pre-Alpha.
+Alpha.
 
 # USAGE EXAMPLE
 

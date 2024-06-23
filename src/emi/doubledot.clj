@@ -208,8 +208,8 @@ or `(new ..AClass ...)`.")
                                                     {:input %}))
                                         :else (Class/.getName %))))))))))))
 
-(defn unnicknames
-  ([[:as more]] (unnicknames *ns* more))
+(defn unnickname
+  ([[:as more]] (unnickname *ns* more))
   ([ns_ [:as more]]
    (effects!
     (swap! *ns->
@@ -254,9 +254,8 @@ or `(new ..AClass ...)`.")
            #(reduce dissoc % %2) (map clojure.lang.Symbol/.getName more)))))
 
 (defn ns-shorthands
-  "Gets the shorthands for the `ns_`. 
-   Note that those are kept around as strings for perf, 
-   so you get a fresh map every time you call this."
+  "Gets the shorthands in effect for the `ns_`. 
+   Note that you get a fresh map every time you call this."
   [ns_]
   (some->> (get-in @*ns-> [::shorthand->package (clojure.lang.Namespace/.getName ns_)])
            (into {} (map #(mapv symbol %)))))

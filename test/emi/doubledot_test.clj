@@ -5,7 +5,7 @@
 (defmacro ^:private clearing-shorthands
   [& body]
   `(try (do ~@body)
-        (finally (dd/unnicknames (keys (dd/ns-nicknames *ns*)))
+        (finally (dd/unnickname (keys (dd/ns-nicknames *ns*)))
                  (dd/unshorthand (keys (dd/ns-shorthands *ns*))))))
 
 (test/deftest nicknames
@@ -13,7 +13,7 @@
     (clearing-shorthands
      (do (test/is (any? (dd/nicknames {'Objects Class})))
          (test/is (= '{Objects java.lang.Class} (dd/ns-nicknames *ns*))))
-     (do (test/is (any? (dd/unnicknames '[Objects])))
+     (do (test/is (any? (dd/unnickname '[Objects])))
          (test/is (= {} (dd/ns-nicknames *ns*))))))
 
   (test/testing "blank nicknames disallowed"
