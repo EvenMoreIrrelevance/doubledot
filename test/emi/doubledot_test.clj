@@ -115,15 +115,15 @@
   (test/testing "#-! #-!"
     (clearing-shorthands
      (dd/shorthands '{j.u java.util java.util emi.doubledot_test})
-     (test/is (not= 'emi.doubledot_test.List
-                    (-> 'j.u.List
-                        (dd/read-shortened-sym)
-                        (dd/read-shortened-sym))))))
+     (test/is (= (dd/read-shortened-sym 'j.u.List)
+                 (-> 'j.u.List
+                     (dd/read-shortened-sym)
+                     (dd/read-shortened-sym))))))
   (test/testing "#-! #+!" ;; I *might* just make this blow up lmao.
     (clearing-shorthands
      (dd/shorthands '{j.u java.util java.util emi.doubledot_test})
-     (test/is (not= 'emi.doubledot_test.List
-                    (-> 'j.u.List (dd/read-shortened-sym) (dd/read-shortened))))))
+     (test/is (= (dd/read-shortened '..j.u.List)
+                 (-> '..j.u.List (dd/read-shortened) (dd/read-shortened-sym))))))
   (test/testing "#+! #-!"
     (clearing-shorthands
      (dd/shorthands '{j.u ..java.util java.util emi.doubledot_test})
