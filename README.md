@@ -36,8 +36,8 @@ Alpha.
 
 ```
 emi/doubledot {:git/url "https://github.com/EvenMoreIrrelevance/doubledot"
-               :git/sha "e6a71aabe2bc50872db8c300a4470bb74bfe9d29"}
+               :git/sha "32a308d1276bfbaabff6dd6627a176d8a04c8fc7"}
 
 emi/doubledot-readerless {:git/url "https://github.com/EvenMoreIrrelevance/doubledot"
-                          :git/sha "b8594f911ce68aa64d13c8a3157d33a0a532e847"}
+                          :git/sha "d95070aa1f280c20e7b055f4515f13a4056a5dc0"}
 ```
