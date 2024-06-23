@@ -6,14 +6,17 @@ Born of half a week of having to deal with multiple Java classes with the same p
 
 Never worry about that again! With only a bit of flagrant violation of Clojure's reserved symbols rules you too can experience the joy of `nicknames` for classes and `shorthands` for packages that work (almost) everywhere! If you aren't feeling adventurous or you just want your subforms to still make sense in isolation, there also is a reader macro to apply to single symbols that sadly makes the name of this library meaningless.
 
-Pre-Alpha.
+By default, the reader-macros `#+!` and `#-!` are bound respectively to `read-shortened` and `read-shortened-sym`,
+but a `readerless` version is also available that lets you define your own instead.
 
-Data readers aren't included in this version. Bind your own to `emi.doubledot/read-shortened` and `emi.doubledot/read-shortened-sym`
+Pre-Alpha.
 
 # COORDINATES
 
-With predefined data-readers:
 ```
 emi/doubledot {:git/url "https://github.com/EvenMoreIrrelevance/doubledot"
-               :git/sha "388739380863c66ca1b524eba2c7acf3af633bb2"}
+               :git/sha "e6a71aabe2bc50872db8c300a4470bb74bfe9d29"}
+
+emi/doubledot-readerless {:git/url "https://github.com/EvenMoreIrrelevance/doubledot"
+                          :git/sha "b8594f911ce68aa64d13c8a3157d33a0a532e847"}
 ```
