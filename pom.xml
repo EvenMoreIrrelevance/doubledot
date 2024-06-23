@@ -5,9 +5,9 @@
   <modelVersion>4.0.0</modelVersion>
   <packaging>jar</packaging>
   <groupId>emi</groupId>
-  <artifactId>doubledot</artifactId>
+  <artifactId>doubledot-readerless</artifactId>
   <version>0.1.0-alpha2</version>
-  <name>emi/doubledot</name>
+  <name>emi/doubledot-readerless</name>
   <description>Nicknames and package shorthands that might actually work.</description>
   <url>https://github.com/EvenMoreIrrelevance/doubledot</url>
   <licenses>

@@ -8,8 +8,11 @@ Never worry about that again! With only a bit of flagrant violation of Clojure's
 
 Pre-Alpha.
 
+Data readers aren't included in this version. Bind your own to `emi.doubledot/read-shortened` and `emi.doubledot/read-shortened-sym`
+
 # COORDINATES
 
+With predefined data-readers:
 ```
 emi/doubledot {:git/url "https://github.com/EvenMoreIrrelevance/doubledot"
                :git/sha "388739380863c66ca1b524eba2c7acf3af633bb2"}
