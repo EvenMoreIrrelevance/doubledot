@@ -1,4 +1,4 @@
-(ns emi.doubledot
+(ns org.clojars.evenmoreirrelevance.doubledot
   (:require [clojure.spec.alpha :as spec]
             [clojure.walk :as walk]
             [clojure.string :as str]
