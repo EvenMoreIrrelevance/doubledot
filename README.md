@@ -15,7 +15,12 @@ Alpha.
 
 ```clojure
 (shorthands '{j.u java.util clj clojure.lang})
-(nichnames {'DomNode org.w3c.dom.Node})
+;; This is a bad example!
+;; I implemented the feature because perhaps someone has a better idea than me on how to use it,
+;; but in my time using this I've never had a case where I reached for this.
+;; That being said, Clojure well and truly converted me to the religion of the Namespace
+;; and I hardly ever `refer` a function nowadays, so maybe it's just me.
+(nichnames {'DomNode org.w3c.dom.Node}) 
 
 ;; recursive reader (interacts safely with itself)
 #+!
