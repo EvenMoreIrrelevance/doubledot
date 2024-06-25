@@ -38,11 +38,4 @@ Alpha.
 ```
 
 # COORDINATES
-
-```
-emi/doubledot {:git/url "https://github.com/EvenMoreIrrelevance/doubledot"
-               :git/sha "32a308d1276bfbaabff6dd6627a176d8a04c8fc7"}
-
-emi/doubledot-readerless {:git/url "https://github.com/EvenMoreIrrelevance/doubledot"
-                          :git/sha "d95070aa1f280c20e7b055f4515f13a4056a5dc0"}
-```
+WIP!
