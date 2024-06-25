@@ -1,4 +1,4 @@
-(ns emi.doubledot-test
+(ns org.clojars.evenmoreirrelevance.doubledot-test
   (:require [clojure.test :as test]
             [emi.doubledot :as dd]))
 

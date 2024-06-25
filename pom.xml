@@ -4,10 +4,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <packaging>jar</packaging>
-  <groupId>emi</groupId>
+  <groupId>org.clojars.evenmoreirrelevance</groupId>
   <artifactId>doubledot</artifactId>
   <version>0.1.0-alpha3</version>
-  <name>emi/doubledot</name>
+  <name>org.clojars.evenmoreirrelevance/doubledot</name>
   <description>Nicknames and package shorthands that might actually work.</description>
   <url>https://github.com/EvenMoreIrrelevance/doubledot</url>
   <licenses>
