@@ -1,6 +1,6 @@
 (ns org.clojars.evenmoreirrelevance.doubledot-test
   (:require [clojure.test :as test]
-            [emi.doubledot :as dd]))
+            [org.clojars.evenmoreirrelevance.doubledot :as dd]))
 
 (defmacro ^:private clearing-shorthands
   [& body]
@@ -25,7 +25,7 @@
      (test/is (thrown? IllegalArgumentException (dd/nicknames {'nick (class (object-array 1))}))))
     (clearing-shorthands
      (do (eval (list `deftype (symbol "Invalid@Type") []))
-         (let [evil-class (Class/forName "emi.doubledot_test.Invalid@Type")]
+         (let [evil-class (Class/forName "org.clojars.evenmoreirrelevance.doubledot_test.Invalid@Type")]
            (test/is (thrown? IllegalArgumentException (dd/nicknames {'nick evil-class})))))))
 
   (test/testing "classes with no package qualification disallowed"
