@@ -1,2 +1,2 @@
-{+! emi.doubledot/read-shortened
- -! emi.doubledot/read-shortened-sym}
+{+! org.clojars.evenmoreirrelevance.doubledot/read-shortened
+ -! org.clojars.evenmoreirrelevance.doubledot/read-shortened-sym}

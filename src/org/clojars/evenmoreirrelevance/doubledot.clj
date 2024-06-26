@@ -30,9 +30,9 @@
                    :explanation (spec/explain-str spec val)})))))
 
 (defn class-edn-read-roundtrips?
-  [x]
-  (try (= (Class/.getName x)
-          (str (edn/read-string (Class/.getName x))))
+  [^Class x]
+  (try (= (.getName x)
+          (str (edn/read-string (.getName x))))
        (catch Exception _ false)))
 
 (defmacro ^:private effects!
@@ -55,7 +55,8 @@
   (defn ^:private unmetabox
     [x]
     (if (instance? MetaBox x)
-      (with-meta @x (meta x))
+      (doto (with-meta @x (meta x))
+        (-> meta prn))
       x)))
 
 (spec/def ::nonblank-simple-symbol
@@ -86,12 +87,12 @@
    m1 (apply concat m ms)))
 
 (defn ^:private compare-by-prefix-length-alpha
-  [s1 s2]
+  [^String s1 s2]
   (cond
     (= s1 s2) 0
     (str/starts-with? s1 s2) -1
     (str/starts-with? s2 s1) 1
-    :else (String/.compareTo s1 s2)))
+    :else (.compareTo s1 s2)))
 
 (defonce ^:private *ns->
   (atom {::shorthand->package {}
@@ -100,10 +101,11 @@
 
 (defn ^:private parse-shortened
   [strn shorthand->full]
-  (when-first [[short full] (filter #(and (str/starts-with? strn (key %))
-                                          (re-matches #"[.].+" (subs strn (count (key %)))))
-                                    (subseq shorthand->full > strn))]
-    (str full (subs strn (count short)))))
+  (when shorthand->full 
+    (when-first [[short full] (filter #(and (str/starts-with? strn (key %))
+                                            (re-matches #"[.].+" (subs strn (count (key %)))))
+                                      (subseq shorthand->full > strn))]
+      (str full (subs strn (count short))))))
 
 (spec/def ::nicks->classes
   (spec/map-of
@@ -111,7 +113,7 @@
    class?))
 
 (defn ^:private parse-nicknamed
-  [strn nick->name]
+  [strn nick->name] 
   (get nick->name strn))
 
 (def end-dot-err-explanation
@@ -124,7 +126,7 @@ or `(new ..AClass ...)`.")
 (defn ^:private
   ns->transform
   [ns_]
-  (let [ns-name (clojure.lang.Namespace/.getName ns_)
+  (let [ns-name (.getName ^clojure.lang.Namespace ns_)
         ns-> @*ns->
         shorthands (get-in ns-> [::shorthand->package ns-name])
         nicknames (get-in ns-> [::nickname->classname ns-name])]
@@ -148,13 +150,16 @@ or `(new ..AClass ...)`.")
                 :else
                 out))))))
 
+
+
 (defn ^:private read-shortened*
   [walkable-meta-keys transform frm]
   (->> frm
        (walk/prewalk
         (fn [e]
           (let [new-e (cond
-                        (or (-> e meta ::l) (and (seq? e) (= 'quote (first e))))
+                        (or (-> e meta ::l) 
+                            (and (seq? e) (= `quote (first e))))
                         (metabox e)
                         (not (symbol? e))
                         e
@@ -184,7 +189,7 @@ or `(new ..AClass ...)`.")
    (nicknames *ns* nicks->classes))
   ([ns_ {:as nicks->classes}]
    (effects!
-    (let [ns-name (clojure.lang.Namespace/.getName ns_)]
+    (let [ns-name (.getName ^ clojure.lang.Namespace ns_)]
       (swap! *ns-> update-in [::nickname->classname ns-name]
              (fn [ns-nicknames->classnames]
                (-> (or ns-nicknames->classnames {})
@@ -198,7 +203,7 @@ or `(new ..AClass ...)`.")
                     (-> (conform!! ::nicks->classes nicks->classes)
                         (update-keys name)
                         (update-vals #(cond
-                                        (not (str/includes? (Class/.getName %) "."))
+                                        (not (str/includes? (.getName ^Class %) "."))
                                         (throw (rex IllegalArgumentException
                                                     "Classes which aren't package-qualified are disallowed."
                                                     {:input %}))
@@ -206,21 +211,21 @@ or `(new ..AClass ...)`.")
                                         (throw (rex IllegalArgumentException
                                                     "Classname doesn't read as a simple-symbol."
                                                     {:input %}))
-                                        :else (Class/.getName %))))))))))))
+                                        :else (.getName ^Class %))))))))))))
 
 (defn unnickname
   ([[:as more]] (unnickname *ns* more))
   ([ns_ [:as more]]
    (effects!
     (swap! *ns->
-           update-in [::nickname->classname (clojure.lang.Namespace/.getName ns_)]
-           #(reduce dissoc % %2) (map clojure.lang.Symbol/.getName more)))))
+           update-in [::nickname->classname (.getName ^clojure.lang.Namespace ns_)]
+           #(reduce dissoc % %2) (map #(name (cast clojure.lang.Symbol %)) more)))))
 
 (defn ns-nicknames
   "Gets the nicknames in effect in `ns_`.
    Note that you will get a fresh map every time you call this."
   [ns_]
-  (some->> (get-in @*ns-> [::nickname->classname (clojure.lang.Namespace/.getName ns_)])
+  (some->> (get-in @*ns-> [::nickname->classname (.getName ^clojure.lang.Namespace ns_)])
            (into {} (map #(mapv symbol %)))))
 
 (defn shorthands
@@ -229,7 +234,7 @@ or `(new ..AClass ...)`.")
   ([{:as shorthand->package}] (shorthands *ns* shorthand->package))
   ([ns_ {:as shorthand->package}]
    (effects!
-    (let [ns-sym (clojure.lang.Namespace/.getName ns_)]
+    (let [ns-sym (.getName ^clojure.lang.Namespace ns_)]
       (swap! *ns-> update-in [::shorthand->package ns-sym]
              (fn [ns-shorthand->package]
                (-> (or ns-shorthand->package (sorted-map-by compare-by-prefix-length-alpha))
@@ -250,14 +255,14 @@ or `(new ..AClass ...)`.")
   ([more] (unshorthand *ns* more))
   ([ns_ [& more]]
    (effects!
-    (swap! *ns-> update-in [::shorthand->package (clojure.lang.Namespace/.getName ns_)]
-           #(reduce dissoc % %2) (map clojure.lang.Symbol/.getName more)))))
+    (swap! *ns-> update-in [::shorthand->package (.getName ^clojure.lang.Namespace ns_)]
+           #(reduce dissoc % %2) (map #(name (cast clojure.lang.Symbol %)) more)))))
 
 (defn ns-shorthands
   "Gets the shorthands in effect for the `ns_`. 
    Note that you get a fresh map every time you call this."
   [ns_]
-  (some->> (get-in @*ns-> [::shorthand->package (clojure.lang.Namespace/.getName ns_)])
+  (some->> (get-in @*ns-> [::shorthand->package (.getName ^clojure.lang.Namespace ns_)])
            (into {} (map #(mapv symbol %)))))
 
 (defn read-shortened
@@ -340,7 +345,7 @@ or `(new ..AClass ...)`.")
             #(doto ^..j.u.List % (.add 4))
             ..j.u.List]))
         (println "+++TEST read-shortened-sym+++")
-        (pprint/pprint (read-shortened-sym '^[..j.u.List j.u.List] j.u.List))
+        (pprint/pprint (read-shortened-sym '^..j.u.List j.u.List))
         (println (try (read-shortened-sym 'j.u.List.) (catch IllegalArgumentException iae iae)))
         (println (try (read-shortened-sym '..j.u.List) (catch IllegalArgumentException iae iae)))
         (println (try (read-shortened-sym 3) (catch ClassCastException cce cce))))))
