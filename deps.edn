@@ -1,6 +1,13 @@
-{:paths ["src"] ;; project paths
- :deps {org.clojure/clojure {:mvn/version "1.11.2"}} 
-
+{:paths 
+ ["src"] ;; project paths
+ :deps
+ {org.clojure/clojure {:mvn/version "1.11.2"}}
  :aliases
- {:build {:deps {io.github.clojure/tools.build {:mvn/version "0.10.4"}}
-          :ns-default build}}}
+ {:build {:deps {io.github.clojure/tools.build {:mvn/version "0.10.4"}
+                 slipset/deps-deploy {:mvn/version "RELEASE"}}
+          :ns-default build}
+  :deploy {:deps {slipset/deps-deploy {:mvn/version "RELEASE"}}
+           :exec-fn deps-deploy.deps-deploy/deploy
+           :exec-args {:installer :remote
+                       :sign-releases? false
+                       :artifact "target/doubledot-readerless-0.1.0-alpha3.jar"}}}}
