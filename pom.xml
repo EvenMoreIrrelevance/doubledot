@@ -28,6 +28,10 @@
       <version>1.11.2</version>
     </dependency>
   </dependencies>
+  <scm>
+    <url>https://github.com/EvenMoreIrrelevance/doubledot</url>
+    <tag>0.1.0-alpha3</tag>
+  </scm>
   <build>
     <sourceDirectory>src</sourceDirectory>
   </build>

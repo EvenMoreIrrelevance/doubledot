@@ -38,4 +38,4 @@ Alpha.
 ```
 
 # COORDINATES
-WIP!
+Available on Clojars at: https://clojars.org/org.clojars.evenmoreirrelevance/doubledot
