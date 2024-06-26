@@ -11,8 +11,6 @@
         (.newDocumentBuilder)
         (.parse r))))
 
-NodeList
-
 (let [xpaths (XPathFactory/newInstance)]
   (defn xpath-select
     [query doc]
@@ -47,6 +45,9 @@ NodeList
 
 (defn clean [_]
   (b/delete {:path "target"}))
+
+(defn sync-pom [_]
+  (b/write-pom (conj (jar-opts {}) {:target "." :class-dir nil})))
 
 (defn jar [_]
   (b/write-pom (jar-opts {}))
