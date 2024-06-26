@@ -4,10 +4,9 @@
  {org.clojure/clojure {:mvn/version "1.11.2"}
   potemkin/potemkin {:mvn/version "0.4.6"}}
  :aliases
- {:build {:deps {io.github.clojure/tools.build {:mvn/version "0.10.4"}
-                 slipset/deps-deploy {:mvn/version "RELEASE"}}
+ {:build {:extra-deps {io.github.clojure/tools.build {:mvn/version "0.10.4"}}
           :ns-default build}
-  :deploy {:deps {slipset/deps-deploy {:mvn/version "RELEASE"}}
+  :deploy {:extra-deps {slipset/deps-deploy {:mvn/version "0.2.1"}}
            :exec-fn deps-deploy.deps-deploy/deploy
            :exec-args {:installer :remote
                        :sign-releases? false
