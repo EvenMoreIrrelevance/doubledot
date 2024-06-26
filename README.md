@@ -38,4 +38,5 @@ Alpha.
 ```
 
 # COORDINATES
-Available on Clojars at: https://clojars.org/org.clojars.evenmoreirrelevance/doubledot
+- Version with reader-macros: https://clojars.org/org.clojars.evenmoreirrelevance/doubledot 
+- Readerless version: https://clojars.org/org.clojars.evenmoreirrelevance/doubledot-readerless
