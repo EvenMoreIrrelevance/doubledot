@@ -20,12 +20,12 @@
 
 (def lib
   (-> (xpath-select "/project/name/text()" pom)
-      (first) (Node/.getTextContent) 
+      ^Node (first) (.getTextContent) 
       (keyword)))
 
 (def version
   (-> (xpath-select "/project/version/text()" pom)
-      (first) (Node/.getTextContent)))
+      ^Node (first) (.getTextContent)))
 
 (def class-dir "target/classes")
 (def jar-file (format "target/%s-%s.jar" (name lib) version))
