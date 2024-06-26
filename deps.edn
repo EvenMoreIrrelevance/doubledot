@@ -6,6 +6,8 @@
  :aliases
  {:build {:extra-deps {io.github.clojure/tools.build {:mvn/version "0.10.4"}}
           :ns-default build}
+  :test {:exec-fn org.clojars.evenmoreirrelevance.doubledot-test/test-doubledot
+         :paths ["src" "test"]}
   :deploy {:extra-deps {slipset/deps-deploy {:mvn/version "0.2.1"}}
            :exec-fn deps-deploy.deps-deploy/deploy
            :exec-args {:installer :remote
