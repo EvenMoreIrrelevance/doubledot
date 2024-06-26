@@ -27,7 +27,18 @@
       <artifactId>clojure</artifactId>
       <version>1.11.2</version>
     </dependency>
+    <dependency>
+      <groupId>potemkin</groupId>
+      <artifactId>potemkin</artifactId>
+      <version>0.4.6</version>
+    </dependency>
   </dependencies>
+  <repositories>
+     <repository>
+      <id>clojars</id>
+      <url>https://repo.clojars.org/</url>
+    </repository>
+  </repositories>
   <scm>
     <url>https://github.com/EvenMoreIrrelevance/doubledot</url>
     <tag>readerless-0.1.0-alpha4</tag>
