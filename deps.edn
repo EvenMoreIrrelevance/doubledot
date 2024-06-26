@@ -11,4 +11,4 @@
            :exec-fn deps-deploy.deps-deploy/deploy
            :exec-args {:installer :remote
                        :sign-releases? false
-                       :artifact "target/doubledot-0.1.0-alpha4.jar"}}}}
+                       :artifact "target/doubledot-0.1.0-alpha5.jar"}}}}
