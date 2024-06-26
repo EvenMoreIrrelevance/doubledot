@@ -1,7 +1,8 @@
 {:paths 
  ["src"] ;; project paths
  :deps
- {org.clojure/clojure {:mvn/version "1.11.2"}}
+ {org.clojure/clojure {:mvn/version "1.11.2"}
+  potemkin/potemkin {:mvn/version "0.4.6"}}
  :aliases
  {:build {:deps {io.github.clojure/tools.build {:mvn/version "0.10.4"}
                  slipset/deps-deploy {:mvn/version "RELEASE"}}
@@ -10,4 +11,4 @@
            :exec-fn deps-deploy.deps-deploy/deploy
            :exec-args {:installer :remote
                        :sign-releases? false
-                       :artifact "target/doubledot-readerless-0.1.0-alpha3.jar"}}}}
+                       :artifact "target/doubledot-readerless-0.1.0-alpha4.jar"}}}}
