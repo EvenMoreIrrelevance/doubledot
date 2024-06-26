@@ -6,7 +6,7 @@
   <packaging>jar</packaging>
   <groupId>org.clojars.evenmoreirrelevance</groupId>
   <artifactId>doubledot</artifactId>
-  <version>0.1.0-alpha3</version>
+  <version>0.1.0-alpha4</version>
   <name>org.clojars.evenmoreirrelevance/doubledot</name>
   <description>Nicknames and package shorthands that might actually work.</description>
   <url>https://github.com/EvenMoreIrrelevance/doubledot</url>
@@ -30,7 +30,7 @@
   </dependencies>
   <scm>
     <url>https://github.com/EvenMoreIrrelevance/doubledot</url>
-    <tag>0.1.0-alpha3</tag>
+    <tag>0.1.0-alpha4</tag>
   </scm>
   <build>
     <sourceDirectory>src</sourceDirectory>

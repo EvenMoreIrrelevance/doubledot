@@ -1,6 +1,6 @@
 (ns org.clojars.evenmoreirrelevance.doubledot
   (:require [clojure.spec.alpha :as spec]
-            [clojure.walk :as walk]
+            [potemkin.walk :as walk]
             [clojure.string :as str]
             [clojure.core.protocols]
             [clojure.edn :as edn]))
@@ -55,8 +55,7 @@
   (defn ^:private unmetabox
     [x]
     (if (instance? MetaBox x)
-      (doto (with-meta @x (meta x))
-        (-> meta prn))
+      (with-meta @x (meta x))
       x)))
 
 (spec/def ::nonblank-simple-symbol
