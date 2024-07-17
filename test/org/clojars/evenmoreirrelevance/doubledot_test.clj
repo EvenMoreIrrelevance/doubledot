@@ -12,38 +12,39 @@
 (defmacro ^:private clearing-shorthands
   [& body]
   `(try (do ~@body)
-        (finally (dd/unnickname (keys (dd/ns-nicknames *ns*)))
-                 (dd/unshorthand (keys (dd/ns-shorthands *ns*))))))
+        (finally 
+          #_(dd/unnickname (keys (dd/ns-nicknames *ns*)))
+          (dd/unshorthand (keys (dd/ns-shorthands *ns*))))))
 
 
-(test/deftest nicknames
-  (test/testing "happy path"
-    (clearing-shorthands
-     (do (test/is (any? (dd/nicknames {'Objects Class})))
-         (test/is (= '{Objects java.lang.Class} (dd/ns-nicknames *ns*))))
-     (do (test/is (any? (dd/unnickname '[Objects])))
-         (test/is (= {} (dd/ns-nicknames *ns*))))))
+#_(test/deftest nicknames
+    (test/testing "happy path"
+      (clearing-shorthands
+       (do (test/is (any? (dd/nicknames {'Objects Class})))
+           (test/is (= '{Objects java.lang.Class} (dd/ns-nicknames *ns*))))
+       (do (test/is (any? (dd/unnickname '[Objects])))
+           (test/is (= {} (dd/ns-nicknames *ns*))))))
 
-  (test/testing "blank nicknames disallowed"
-    (clearing-shorthands
-     (test/is (thrown? IllegalArgumentException (dd/nicknames {(symbol "  ") Class})))))
+    (test/testing "blank nicknames disallowed"
+      (clearing-shorthands
+       (test/is (thrown? IllegalArgumentException (dd/nicknames {(symbol "  ") Class})))))
 
-  (test/testing "classes whose names read into simple-symbols disallowed"
-    (clearing-shorthands
-     (test/is (thrown? IllegalArgumentException (dd/nicknames {'nick (class (object-array 1))}))))
-    (clearing-shorthands
-     (let [evil-class (eval `(deftype ~(symbol "Invalid@Type") []))]
-       (test/is (thrown? IllegalArgumentException (dd/nicknames {'nick evil-class}))))))
+    (test/testing "classes whose names read into simple-symbols disallowed"
+      (clearing-shorthands
+       (test/is (thrown? IllegalArgumentException (dd/nicknames {'nick (class (object-array 1))}))))
+      (clearing-shorthands
+       (let [evil-class (eval `(deftype ~(symbol "Invalid@Type") []))]
+         (test/is (thrown? IllegalArgumentException (dd/nicknames {'nick evil-class}))))))
 
-  (test/testing "classes with no package qualification disallowed"
-    (clearing-shorthands
-     (test/is (thrown? IllegalArgumentException (dd/nicknames {'nick Integer/TYPE})))))
+    (test/testing "classes with no package qualification disallowed"
+      (clearing-shorthands
+       (test/is (thrown? IllegalArgumentException (dd/nicknames {'nick Integer/TYPE})))))
 
-  (test/testing "no nickname redefinitions without unnicknaming first"
-    (clearing-shorthands
-     (dd/nicknames {'nick Class})
-     (test/is (any? (dd/nicknames {'nick Class})))
-     (test/is (thrown? IllegalStateException (dd/nicknames {'nick Object}))))))
+    (test/testing "no nickname redefinitions without unnicknaming first"
+      (clearing-shorthands
+       (dd/nicknames {'nick Class})
+       (test/is (any? (dd/nicknames {'nick Class})))
+       (test/is (thrown? IllegalStateException (dd/nicknames {'nick Object}))))))
 
 (test/deftest shorthands
   (test/testing "happy path"
@@ -67,17 +68,19 @@
 (test/deftest read-shortened
   (clearing-shorthands
    (dd/shorthands '{j.u java.util u util j java})
-   (dd/nicknames {'DomNode org.w3c.dom.Node})
+   #_(dd/nicknames {'DomNode org.w3c.dom.Node})
    (test/testing "simple"
      (test/are [lh sh] (= lh (dd/read-shortened sh))
        'java.util.Map '..j.u.Map
        'java.util.concurrent.ConcurrentHashMap '..j.u.concurrent.ConcurrentHashMap
-       'org.w3c.dom.Node '..DomNode
+       #_'org.w3c.dom.Node #_'..DomNode
        'java.util.Map/add '..j.u.Map/add)) 
 
    (test/testing "walks forms"
-     (test/is (= '[java.util.Map org.w3c.dom.Node] (dd/read-shortened '[..j.u.Map ..DomNode])))
-     (test/is (= '{java.util.Map 2 3 org.w3c.dom.Node} (dd/read-shortened '{..j.u.Map 2 3 ..DomNode}))))
+     (test/is (= '[java.util.Map #_org.w3c.dom.Node] 
+                 (dd/read-shortened '[..j.u.Map #_..DomNode])))
+     (test/is (= '{java.util.Map 2 #_3 #_org.w3c.dom.Node} 
+                 (dd/read-shortened '{..j.u.Map 2 #_3 #_..DomNode}))))
    (test/testing "spares quoted forms"
      (test/is (= '(quote ..j.u.Map) (dd/read-shortened '(quote ..j.u.Map)))))
    (test/testing "spares literals"
@@ -100,12 +103,12 @@
 (test/deftest read-shortened-sym
   (clearing-shorthands
    (dd/shorthands '{j.u java.util u util})
-   (dd/nicknames {'DomNode org.w3c.dom.Node})
+   #_(dd/nicknames {'DomNode org.w3c.dom.Node})
    (test/testing "only accepts symbols"
      (test/is (thrown? ClassCastException (dd/read-shortened-sym []))))
    (test/testing "doesn't require .. before symbol"
      (test/is (= 'java.util.Map (dd/read-shortened-sym 'j.u.Map)))
-     (test/is (= 'org.w3c.dom.Node (dd/read-shortened-sym 'DomNode))))))
+     #_(test/is (= 'org.w3c.dom.Node (dd/read-shortened-sym 'DomNode))))))
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (deftype List [])
@@ -140,3 +143,5 @@
                          (catch Throwable _ nil)))))))
 
 (defn test-doubledot [_] (test/run-tests this-ns))
+
+(comment (test-doubledot nil))

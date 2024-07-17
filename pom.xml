@@ -39,7 +39,7 @@
   </repositories>
   <scm>
     <url>https://github.com/EvenMoreIrrelevance/doubledot</url>
-    <tag>v0.1.0-alpha5</tag>
+    <tag>v0.2.0-alpha1</tag>
   </scm>
   <build>
     <sourceDirectory>src</sourceDirectory>
