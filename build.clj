@@ -19,9 +19,9 @@
             (range (.getLength nodes))))))
 
 (def lib
-  (-> (xpath-select "/project/name/text()" pom)
-      ^Node (first) (.getTextContent) 
-      (keyword)))
+  (keyword
+   (-> (xpath-select "/project/groupId/text()" pom) ^Node (first) (.getTextContent))
+   (-> (xpath-select "/project/artifactId/text()" pom) ^Node (first) (.getTextContent))))
 
 (def version
   (-> (xpath-select "/project/version/text()" pom)
@@ -49,8 +49,13 @@
 (defn sync-pom [_]
   (b/write-pom (conj (jar-opts {}) {:target "." :class-dir nil})))
 
+(defn export-kondo [_]
+  (b/copy-dir {:src-dirs [".clj-kondo/org/clojars/evenmoreirrelevance/doubledot"]
+               :target-dir "resources/clj-kondo.exports/org/clojars/evenmoreirrelevance/doubledot"}))
+
 (defn jar [_]
-  (b/write-pom (jar-opts {}))
+  (sync-pom [_])
+  (export-kondo _)
   (b/copy-dir {:src-dirs ["src" "resources"]
                :target-dir class-dir})
   (b/jar {:class-dir class-dir

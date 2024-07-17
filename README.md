@@ -15,12 +15,6 @@ Alpha.
 
 ```clojure
 (shorthands '{j.u java.util clj clojure.lang})
-;; This is a bad example!
-;; I implemented the feature because perhaps someone has a better idea than me on how to use it,
-;; but in my time using this I've never had a case where I reached for this.
-;; That being said, Clojure well and truly converted me to the religion of the Namespace
-;; and I hardly ever `refer` a function nowadays, so maybe it's just me.
-(nichnames {'DomNode org.w3c.dom.Node}) 
 
 ;; recursive reader (interacts safely with itself)
 #+!
@@ -29,13 +23,16 @@ Alpha.
   (condp instance? self
     ..clj.IPersistentMap :pmap
     #+! ..j.u.concurrent.ConcurrentHashMap :concurrent-hash-map
-    ..j.u.Map :map
-    ..DomNode :dom-node!?))
+    ..j.u.Map :map))
 
 ;; single symbol reader with no `..` requirement (interacts safely with recursive reader)
 ;; also, note how `#+!` also works on metadata.
 (def coll->array-list #+! ^[..j.u.Collection] #-! j.u.ArrayList/new)
 ```
+
+# NREPL INTEGRATION
+A very experimental and rudimentary `nrepl` integration is provided
+by requiring `org.clojars.evenmoreirrelevance.doubledot.nrepl`.
 
 # COORDINATES
 - Version with reader-macros: https://clojars.org/org.clojars.evenmoreirrelevance/doubledot 
