@@ -37,7 +37,7 @@
   (assoc opts
          :lib lib :version version
          :jar-file (format "target/%s-%s.jar" lib version)
-         :scm {:tag (str "v" version)}
+         :scm {:tag (str "readerless-v" version)}
          :basis @basis
          :class-dir class-dir
          :target "target"
