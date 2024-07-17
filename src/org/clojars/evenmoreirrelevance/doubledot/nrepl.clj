@@ -1,6 +1,5 @@
 (ns org.clojars.evenmoreirrelevance.doubledot.nrepl
   (:require
-   [nrepl.core :as nrepl]
    [org.clojars.evenmoreirrelevance.doubledot :as doubledot]
    [org.clojars.evenmoreirrelevance.doubledot.detail :as detail]
    [clojure.string :as str]))
@@ -135,6 +134,7 @@
        ::shorthands-members :candidates #'shorthand-member-candidates :doc #'constantly-empty-str)))
 
 (comment
+  (require '[nrepl.core :as nrepl])
   (defn ask-nrepl
     [& {:as stuff}]
     (with-open [conn (nrepl/connect :port (parse-long (slurp ".nrepl-port")))]
