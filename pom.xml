@@ -3,9 +3,9 @@
   <modelVersion>4.0.0</modelVersion>
   <packaging>jar</packaging>
   <groupId>org.clojars.evenmoreirrelevance</groupId>
-  <artifactId>doubledot-readerless</artifactId>
-  <version>0.1.0-alpha5</version>
-  <name>org.clojars.evenmoreirrelevance/doubledot-readerless</name>
+  <artifactId>doubledot</artifactId>
+  <version>0.2.0-alpha1</version>
+  <name>doubledot</name>
   <description>Nicknames and package shorthands that might actually work.</description>
   <url>https://github.com/EvenMoreIrrelevance/doubledot</url>
   <licenses>
@@ -39,7 +39,7 @@
   </repositories>
   <scm>
     <url>https://github.com/EvenMoreIrrelevance/doubledot</url>
-    <tag>readerless-v0.1.0-alpha5</tag>
+    <tag>readerless-v0.2.0-alpha1</tag>
   </scm>
   <build>
     <sourceDirectory>src</sourceDirectory>

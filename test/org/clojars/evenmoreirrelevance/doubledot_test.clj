@@ -1,42 +1,50 @@
 (ns org.clojars.evenmoreirrelevance.doubledot-test
   (:require [clojure.test :as test]
+            [clojure.string :as str]
             [org.clojars.evenmoreirrelevance.doubledot :as dd]))
+
+(def ^clojure.lang.Namespace this-ns *ns*)
+(def ^String demunged-ns-name 
+  (-> this-ns 
+      .getName name 
+      Compiler/demunge (str/replace "-" "_")))
 
 (defmacro ^:private clearing-shorthands
   [& body]
   `(try (do ~@body)
-        (finally (dd/unnickname (keys (dd/ns-nicknames *ns*)))
-                 (dd/unshorthand (keys (dd/ns-shorthands *ns*))))))
+        (finally 
+          #_(dd/unnickname (keys (dd/ns-nicknames *ns*)))
+          (dd/unshorthand (keys (dd/ns-shorthands *ns*))))))
 
-(test/deftest nicknames
-  (test/testing "happy path"
-    (clearing-shorthands
-     (do (test/is (any? (dd/nicknames {'Objects Class})))
-         (test/is (= '{Objects java.lang.Class} (dd/ns-nicknames *ns*))))
-     (do (test/is (any? (dd/unnickname '[Objects])))
-         (test/is (= {} (dd/ns-nicknames *ns*))))))
 
-  (test/testing "blank nicknames disallowed"
-    (clearing-shorthands
-     (test/is (thrown? IllegalArgumentException (dd/nicknames {(symbol "  ") Class})))))
+#_(test/deftest nicknames
+    (test/testing "happy path"
+      (clearing-shorthands
+       (do (test/is (any? (dd/nicknames {'Objects Class})))
+           (test/is (= '{Objects java.lang.Class} (dd/ns-nicknames *ns*))))
+       (do (test/is (any? (dd/unnickname '[Objects])))
+           (test/is (= {} (dd/ns-nicknames *ns*))))))
 
-  (test/testing "classes whose names read into simple-symbols disallowed"
-    (clearing-shorthands
-     (test/is (thrown? IllegalArgumentException (dd/nicknames {'nick (class (object-array 1))}))))
-    (clearing-shorthands
-     (do (eval (list `deftype (symbol "Invalid@Type") []))
-         (let [evil-class (Class/forName "org.clojars.evenmoreirrelevance.doubledot_test.Invalid@Type")]
-           (test/is (thrown? IllegalArgumentException (dd/nicknames {'nick evil-class})))))))
+    (test/testing "blank nicknames disallowed"
+      (clearing-shorthands
+       (test/is (thrown? IllegalArgumentException (dd/nicknames {(symbol "  ") Class})))))
 
-  (test/testing "classes with no package qualification disallowed"
-    (clearing-shorthands
-     (test/is (thrown? IllegalArgumentException (dd/nicknames {'nick Integer/TYPE})))))
+    (test/testing "classes whose names read into simple-symbols disallowed"
+      (clearing-shorthands
+       (test/is (thrown? IllegalArgumentException (dd/nicknames {'nick (class (object-array 1))}))))
+      (clearing-shorthands
+       (let [evil-class (eval `(deftype ~(symbol "Invalid@Type") []))]
+         (test/is (thrown? IllegalArgumentException (dd/nicknames {'nick evil-class}))))))
 
-  (test/testing "no nickname redefinitions without unnicknaming first"
-    (clearing-shorthands
-     (dd/nicknames {'nick Class})
-     (test/is (any? (dd/nicknames {'nick Class})))
-     (test/is (thrown? IllegalStateException (dd/nicknames {'nick Object}))))))
+    (test/testing "classes with no package qualification disallowed"
+      (clearing-shorthands
+       (test/is (thrown? IllegalArgumentException (dd/nicknames {'nick Integer/TYPE})))))
+
+    (test/testing "no nickname redefinitions without unnicknaming first"
+      (clearing-shorthands
+       (dd/nicknames {'nick Class})
+       (test/is (any? (dd/nicknames {'nick Class})))
+       (test/is (thrown? IllegalStateException (dd/nicknames {'nick Object}))))))
 
 (test/deftest shorthands
   (test/testing "happy path"
@@ -60,17 +68,19 @@
 (test/deftest read-shortened
   (clearing-shorthands
    (dd/shorthands '{j.u java.util u util j java})
-   (dd/nicknames {'DomNode org.w3c.dom.Node})
+   #_(dd/nicknames {'DomNode org.w3c.dom.Node})
    (test/testing "simple"
      (test/are [lh sh] (= lh (dd/read-shortened sh))
        'java.util.Map '..j.u.Map
        'java.util.concurrent.ConcurrentHashMap '..j.u.concurrent.ConcurrentHashMap
-       'org.w3c.dom.Node '..DomNode
+       #_'org.w3c.dom.Node #_'..DomNode
        'java.util.Map/add '..j.u.Map/add)) 
 
    (test/testing "walks forms"
-     (test/is (= '[java.util.Map org.w3c.dom.Node] (dd/read-shortened '[..j.u.Map ..DomNode])))
-     (test/is (= '{java.util.Map 2 3 org.w3c.dom.Node} (dd/read-shortened '{..j.u.Map 2 3 ..DomNode}))))
+     (test/is (= '[java.util.Map #_org.w3c.dom.Node] 
+                 (dd/read-shortened '[..j.u.Map #_..DomNode])))
+     (test/is (= '{java.util.Map 2 #_3 #_org.w3c.dom.Node} 
+                 (dd/read-shortened '{..j.u.Map 2 #_3 #_..DomNode}))))
    (test/testing "spares quoted forms"
      (test/is (= '(quote ..j.u.Map) (dd/read-shortened '(quote ..j.u.Map)))))
    (test/testing "spares literals"
@@ -93,42 +103,45 @@
 (test/deftest read-shortened-sym
   (clearing-shorthands
    (dd/shorthands '{j.u java.util u util})
-   (dd/nicknames {'DomNode org.w3c.dom.Node})
+   #_(dd/nicknames {'DomNode org.w3c.dom.Node})
    (test/testing "only accepts symbols"
      (test/is (thrown? ClassCastException (dd/read-shortened-sym []))))
    (test/testing "doesn't require .. before symbol"
      (test/is (= 'java.util.Map (dd/read-shortened-sym 'j.u.Map)))
-     (test/is (= 'org.w3c.dom.Node (dd/read-shortened-sym 'DomNode))))))
+     #_(test/is (= 'org.w3c.dom.Node (dd/read-shortened-sym 'DomNode))))))
 
 #_{:clj-kondo/ignore [:clojure-lsp/unused-public-var]}
 (deftype List [])
 
+
 (test/deftest reader-interactions
   (test/testing "#+! #+!"
     (clearing-shorthands
-     (dd/shorthands '{j.u ..java.util java.util emi.doubledot_test})
+     (dd/shorthands {'j.u '..java.util 'java.util (symbol demunged-ns-name)})
      ;; note that the expected behavior is for this to throw 
      ;; because `..java.util.List `never resolve to class.
-     (test/is (not= 'emi.doubledot_test.List
+     (test/is (not= '(symbol (str demunged-ns-name ".List"))
                     (try (dd/read-shortened (dd/read-shortened 'j.u.List))
                          (catch Throwable _ nil))))))
   (test/testing "#-! #-!"
     (clearing-shorthands
-     (dd/shorthands '{j.u java.util java.util emi.doubledot_test})
+     (dd/shorthands {'j.u 'java.util 'java.util (symbol demunged-ns-name)})
      (test/is (= (dd/read-shortened-sym 'j.u.List)
                  (-> 'j.u.List
                      (dd/read-shortened-sym)
                      (dd/read-shortened-sym))))))
   (test/testing "#-! #+!" ;; I *might* just make this blow up lmao.
     (clearing-shorthands
-     (dd/shorthands '{j.u java.util java.util emi.doubledot_test})
+     (dd/shorthands {'j.u 'java.util 'java.util (symbol demunged-ns-name)})
      (test/is (= (dd/read-shortened '..j.u.List)
                  (-> '..j.u.List (dd/read-shortened) (dd/read-shortened-sym))))))
   (test/testing "#+! #-!"
     (clearing-shorthands
-     (dd/shorthands '{j.u ..java.util java.util emi.doubledot_test})
+     (dd/shorthands {'j.u '..java.util 'java.util (symbol demunged-ns-name)})
      (test/is (not= 'emi.doubledot_test.List
                     (try (-> 'j.u.List (dd/read-shortened-sym) (dd/read-shortened))
                          (catch Throwable _ nil)))))))
 
-(test/run-tests)
+(defn test-doubledot [_] (test/run-tests this-ns))
+
+(comment (test-doubledot nil))

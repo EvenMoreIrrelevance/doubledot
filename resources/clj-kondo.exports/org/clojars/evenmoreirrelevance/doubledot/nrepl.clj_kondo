@@ -1,0 +1,17 @@
+(ns org.clojars.evenmoreirrelevance.doubledot.nrepl)
+
+(defmacro with-contexts
+  [[:as ctxs] & body]
+  (let [contexts (partition-all 2 ctxs)
+        _ (when-not (= 2 (count (last contexts)))
+            (throw (ex-info "must have an even number of contexts" {:bad ctxs})))
+        _ (when-not (vector? ctxs)
+            (throw (ex-info "first arg must be a vector of contexts" {:bad ctxs})))
+        _ (when-let [not-keys (seq (into [] (comp (map first) (remove keyword?)) contexts))]
+            (throw (ex-info "all left parts of the contexts must be keywords" {:bad ctxs :violations not-keys})))
+        _ (when-let [not-vecs (seq (into [] (comp (map second) (remove vector?)) contexts))]
+            (throw (ex-info "all right parts of the contexts must be vectors" {:bad ctxs :violations not-vecs})))]
+    (reduce (fn [b [context [:as intros]]]
+              `(~(symbol context) [~@intros] ~b))
+            `(do ~@body)
+            (reverse contexts))))
