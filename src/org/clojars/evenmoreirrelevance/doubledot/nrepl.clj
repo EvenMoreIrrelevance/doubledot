@@ -21,7 +21,8 @@
     reducible)))
 
 (do ;; hack around the inlined deps
-  (def ^clojure.lang.Var clj-sources (requiring-resolve 'cider.nrepl.middleware.complete/clj-sources))
+  (def ^clojure.lang.Var clj-sources 
+    (try (requiring-resolve 'cider.nrepl.middleware.complete/clj-sources) (catch Throwable _ nil)))
   (def ^:private compliment-version
     (when clj-sources
       (let [standalone-compliment-version?
